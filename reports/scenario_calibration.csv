@@ -1,0 +1,11 @@
+variant,weeks_summed,above_P90 (target 0.10),above_P97.5 (target 0.025),scenario mean / actual
+"own SKU errors, raw",2,0.167,0.047,0.94
+"own SKU errors, raw",3,0.159,0.028,0.94
+"own SKU errors, mean-centred",2,0.203,0.053,0.853
+"own SKU errors, mean-centred",3,0.185,0.033,0.85
+"own SKU errors, median-centred",2,0.129,0.035,1.0
+"own SKU errors, median-centred",3,0.112,0.028,1.002
+"pooled errors, raw",2,0.131,0.01,0.945
+"pooled errors, raw",3,0.101,0.009,0.945
+"pooled errors, median-centred (used)",2,0.099,0.01,1.013
+"pooled errors, median-centred (used)",3,0.077,0.008,1.016

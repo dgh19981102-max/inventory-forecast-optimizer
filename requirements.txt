@@ -1,0 +1,13 @@
+# Python 3.11+ . All solvers are open source (SCIP / HiGHS ship inside OR-Tools) - no licence needed.
+numpy>=1.26
+pandas>=2.1
+scipy>=1.11
+statsmodels>=0.14
+lightgbm>=4.3
+ortools>=9.12
+openpyxl>=3.1
+pyarrow>=14
+matplotlib>=3.8
+plotly>=5.20
+streamlit>=1.35
+pytest>=8

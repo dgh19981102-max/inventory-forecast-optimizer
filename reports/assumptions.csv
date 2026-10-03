@@ -1,0 +1,16 @@
+,value
+cost_ratio,0.55
+holding_rate_year,0.26
+storage_cost_per_space_week,0.004
+goodwill_rate,0.1
+fixed_order_cost,15.0
+moq_weeks,1.0
+capacity_weeks,3.0
+budget_weeks,1.6
+overflow_cost_per_space_week,0.05
+warehouse_capacity_space,12290.0
+weekly_budget,11320.0
+overflow_cost_per_space_week,0.05
+planning_horizon_weeks,6.0
+service_level_target,0.95
+random_seed,42.0

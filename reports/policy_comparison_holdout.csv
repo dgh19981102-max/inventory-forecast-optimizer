@@ -1,0 +1,17 @@
+,Rule of thumb,Optimised: point forecast + safety stock,Optimised: scenarios (uncertainty-aware)
+Total relevant cost (£),10495.429,6608.489,6064.257
+  Ordering (£),3180.0,2160.0,1620.0
+  Holding (£),925.202,1303.513,1501.767
+  Lost-sale penalty (£),6390.227,3056.523,2760.32
+  Overflow space (£),0.0,88.452,182.17
+Lost units,6193.0,3138.0,3570.0
+Fill rate (units served / demand),0.933,0.966,0.962
+Stock-out SKU-weeks,35.0,18.0,17.0
+Orders placed,212.0,144.0,108.0
+Average inventory value (£),10610.732,14976.027,17772.861
+Inventory turnover (annualised),27.988,20.795,17.595
+Weeks over warehouse capacity,0.0,4.0,8.0
+Purchase spend (£),65774.238,76005.297,78840.261
+Cost saving vs rule of thumb,0.0,0.37,0.422
+Lost units reduction vs rule of thumb,0.0,0.493,0.424
+Stock-out SKU-weeks reduction vs rule of thumb,0.0,0.486,0.514

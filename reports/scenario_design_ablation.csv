@@ -1,0 +1,8 @@
+scenario design,Total relevant cost (£),Fill rate,Stock-out SKU-weeks,Lost-sale penalty (£),Overflow space (£)
+"A. own-SKU errors, raw, 14 tail-weighted scenarios",11635.0,0.972,44,5430.0,243.3
+"B. own-SKU errors, mean-centred",11046.9,0.973,40,5365.9,111.6
+"C. pooled, median-centred + recourse (expected capacity)",11979.1,0.98,35,1779.9,2540.4
+"D. pooled, median-centred + recourse + per-scenario capacity",11290.8,0.98,39,2357.9,1611.5
+"E. pooled, median-centred, 20 Latin-hypercube scenarios + recourse + per-scenario capacity",10709.3,0.983,31,1768.6,1666.1
+"F. pooled, median-centred, 14 tail-weighted scenarios (DEFAULT)",10260.8,0.983,20,3504.9,473.5
+reference: point forecast + safety stock,10422.2,0.984,16,3114.9,424.7
