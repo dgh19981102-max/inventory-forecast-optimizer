@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OptiStock AI — Uncertainty-Aware Inventory &amp; Reorder Optimization</title>
+  <meta name="description" content="Excel in, optimal reorder plan out. AI probabilistic demand forecasting + MILP supply chain optimization for SMB retailers." />
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --surface: #121826;
+      --surface-2: #192236;
+      --border: #26324d;
+      --text: #e6edf7;
+      --muted: #98a6c3;
+      --accent: #38bdf8;
+      --accent-2: #818cf8;
+      --green: #34d399;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: radial-gradient(circle at top right, #16223d 0%, var(--bg) 55%);
+      color: var(--text);
+      line-height: 1.65;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    header {
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      background: rgba(11, 15, 25, 0.8);
+      position: sticky; top: 0; z-index: 20;
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; color: #fff;
+    }
+    .brand-badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07101f; font-weight: 800; font-size: 0.78rem;
+      padding: 4px 8px; border-radius: 6px;
+    }
+    .nav-links { display: flex; gap: 24px; align-items: center; font-size: 0.94rem; }
+    .nav-links a { color: var(--muted); }
+    .nav-links a:hover { color: #fff; text-decoration: none; }
+    .btn {
+      display: inline-block; padding: 10px 20px; border-radius: 8px;
+      font-weight: 600; font-size: 0.94rem; transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); text-decoration: none; opacity: 0.95; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07101f;
+    }
+    .btn-ghost {
+      border: 1px solid var(--border); color: var(--text); background: var(--surface);
+    }
+
+    /* Hero */
+    .hero { padding: 84px 0 64px; text-align: center; }
+    .pill {
+      display: inline-block; padding: 5px 14px; border-radius: 999px;
+      background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent); font-size: 0.85rem; font-weight: 600; margin-bottom: 20px;
+    }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      line-height: 1.12; letter-spacing: -0.03em; margin-bottom: 20px;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #fff 20%, var(--accent) 65%, var(--accent-2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      max-width: 720px; margin: 0 auto 32px; color: var(--muted); font-size: 1.12rem;
+    }
+    .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* KPI Strip */
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px; margin: 48px 0 24px;
+    }
+    .kpi {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 22px; text-align: left;
+    }
+    .kpi-val { font-size: 2rem; font-weight: 800; color: var(--green); line-height: 1.15; }
+    .kpi-label { color: var(--muted); font-size: 0.88rem; margin-top: 6px; }
+
+    /* Sections */
+    section { padding: 64px 0; border-top: 1px solid rgba(38, 50, 77, 0.5); }
+    .sec-title { font-size: 1.9rem; letter-spacing: -0.02em; margin-bottom: 10px; }
+    .sec-sub { color: var(--muted); margin-bottom: 36px; max-width: 680px; }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 24px;
+    }
+    .card h3 { font-size: 1.12rem; margin-bottom: 8px; color: #fff; }
+    .card p { color: var(--muted); font-size: 0.94rem; }
+
+    .shot {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+    }
+    .shot img { width: 100%; display: block; background: #fff; }
+    .shot-cap { padding: 14px 18px; font-size: 0.9rem; color: var(--muted); }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem; }
+    th, td { padding: 14px 18px; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; background: var(--surface-2); }
+    tr:last-child td { border-bottom: none; }
+    .highlight-row { background: rgba(52, 211, 153, 0.08); font-weight: 600; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border); padding: 36px 0;
+      color: var(--muted); font-size: 0.88rem; text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <span class="brand-badge">AI</span>
+        <span>OptiStock AI</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#results">Benchmarks</a>
+        <a href="#workflow">How It Works</a>
+        <a href="#screenshots">Product</a>
+        <a class="btn btn-primary" href="https://github.com/dgh19981102-max/inventory-forecast-optimizer" target="_blank" rel="noopener">View on GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" style="border-top:none;">
+      <div class="container">
+        <span class="pill">Supply Chain &amp; Inventory Decision Intelligence</span>
+        <h1><span class="gradient-text">Excel In, Optimal Reorder Plan Out.</span></h1>
+        <p>
+          OptiStock AI combines probabilistic demand forecasting (ETS + LightGBM) with
+          uncertainty-aware Mixed-Integer Linear Programming (MILP) to generate weekly
+          purchase plans within your real warehouse capacity, cash budget, MOQs, and lead times.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/dgh19981102-max/inventory-forecast-optimizer" target="_blank" rel="noopener">Explore Source &amp; Demo</a>
+          <a class="btn btn-ghost" href="#benchmarks">See 27-Week Backtest</a>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-val">-39%</div>
+            <div class="kpi-label">Total relevant inventory cost vs. rule of thumb (-42% on hold-out)</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-val">-66%</div>
+            <div class="kpi-label">Fewer stock-out SKU-weeks across 30 real retail products</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-val">-61%</div>
+            <div class="kpi-label">Fewer order lines placed (automated smart batching)</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-val">98.3%</div>
+            <div class="kpi-label">Demand fill rate under strict budget &amp; space constraints</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <div class="container">
+        <h2 class="sec-title">Built for Real Operational Constraints</h2>
+        <p class="sec-sub">
+          Point forecasts ignore tail risk. OptiStock AI models forecast error distributions explicitly
+          and solves a multi-scenario integer program in seconds.
+        </p>
+        <div class="grid-3">
+          <div class="card">
+            <h3>1. Probabilistic Forecasting</h3>
+            <p>
+              Compares 5 models (Seasonal Naive, Moving Average, Holt's ETS, LightGBM, Ensemble)
+              in a strict no-look-ahead rolling-origin backtest and calibrates 14 tail-weighted demand scenarios.
+            </p>
+          </div>
+          <div class="card">
+            <h3>2. Uncertainty-Aware MILP</h3>
+            <p>
+              Powered by OR-Tools + SCIP (~5,500 variables solved in 5–30s), enforcing shared weekly cash budgets,
+              warehouse capacity, pack sizes, MOQs, and vendor lead times simultaneously.
+            </p>
+          </div>
+          <div class="card">
+            <h3>3. Excel &amp; Web Ready</h3>
+            <p>
+              Upload a standard Excel workbook via the interactive Streamlit dashboard or CLI,
+              adjust budget &amp; capacity sliders, and export ready-to-execute purchase orders.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="benchmarks">
+      <div class="container">
+        <h2 class="sec-title">27-Week Real Demand Replay (UCI Online Retail II)</h2>
+        <p class="sec-sub">
+          Evaluated across 30 SKUs with weekly rolling re-optimization (Jun–Nov 2011) and verified on an unseen hold-out period (Mar–May 2011).
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Replenishment Policy</th>
+                <th>Total Cost</th>
+                <th>vs. Baseline</th>
+                <th>Fill Rate</th>
+                <th>Stock-Out SKU-Weeks</th>
+                <th>Orders Placed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Rule of thumb (order up to lead time + 2w)</td>
+                <td>&pound;16,758</td>
+                <td>&ndash;</td>
+                <td>96.2%</td>
+                <td>59</td>
+                <td>514</td>
+              </tr>
+              <tr>
+                <td>Rule of thumb (best hindsight-tuned settings)</td>
+                <td>&pound;12,852</td>
+                <td>-23%</td>
+                <td>99.0%</td>
+                <td>13</td>
+                <td>502</td>
+              </tr>
+              <tr>
+                <td>Optimised: Point forecast + safety stock (MILP)</td>
+                <td>&pound;10,422</td>
+                <td>-38%</td>
+                <td>98.4%</td>
+                <td>16</td>
+                <td>259</td>
+              </tr>
+              <tr class="highlight-row">
+                <td>OptiStock AI: 14-Scenario Uncertainty-Aware MILP</td>
+                <td>&pound;10,261</td>
+                <td>-39%</td>
+                <td>98.3%</td>
+                <td>20</td>
+                <td>198</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenshots">
+      <div class="container">
+        <h2 class="sec-title">Interactive App &amp; Diagnostics</h2>
+        <p class="sec-sub">
+          Visual decision support for operations teams: SKU-level uncertainty bands, order schedules, and policy cost comparisons.
+        </p>
+        <div class="grid-2">
+          <div class="shot">
+            <img src="assets/app_order_plan.png" alt="OptiStock AI Order Plan Dashboard" />
+            <div class="shot-cap"><strong>Interactive Reorder App:</strong> Upload Excel, tune budget/capacity sliders, and export the weekly order plan.</div>
+          </div>
+          <div class="shot">
+            <img src="assets/app_product_view.png" alt="SKU Forecast and Projected Stock" />
+            <div class="shot-cap"><strong>SKU Risk View:</strong> 80% prediction intervals, scheduled deliveries, and projected inventory trajectory.</div>
+          </div>
+          <div class="shot">
+            <img src="assets/policy_cost_comparison.png" alt="Policy Cost Comparison" />
+            <div class="shot-cap"><strong>Cost Breakdown:</strong> Ordering, holding, lost-sale penalty, and overflow costs across policies.</div>
+          </div>
+          <div class="shot">
+            <img src="assets/forecast_accuracy.png" alt="Rolling Origin Backtest Accuracy" />
+            <div class="shot-cap"><strong>Model Calibration:</strong> Rolling-origin backtest across 8,340 forecasts per model.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>
+        OptiStock AI &middot; Built by Guohao Dong &middot;
+        <a href="https://github.com/dgh19981102-max/inventory-forecast-optimizer" target="_blank" rel="noopener">GitHub Repository</a> &middot;
+        <a href="https://www.linkedin.com/in/guohao-dong-ai/" target="_blank" rel="noopener">LinkedIn</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
